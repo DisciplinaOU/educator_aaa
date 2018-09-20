@@ -87,7 +87,7 @@ phoenix_locals_without_parens = [
 ]
 
 [
-  inputs: [".formatter.exs", "mix.exs", "{config,lib,test,rel}/**/*.{ex,exs}"],
+  inputs: [".formatter.exs", "mix.exs", "{db,config,lib,test,rel}/**/*.{ex,exs}"],
   locals_without_parens: distillery_locals_without_parens ++ phoenix_locals_without_parens,
   import_deps: ~w[
     ecto distillery
