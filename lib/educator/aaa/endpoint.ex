@@ -21,9 +21,8 @@ defmodule Educator.AAA.Endpoint do
   plug Plug.Logger
 
   plug Plug.Parsers,
-    parsers: [:urlencoded, :multipart, :json],
-    pass: ["*/*"],
-    json_decoder: Poison
+    parsers: [:json],
+    json_decoder: Jason
 
   plug Plug.MethodOverride
   plug Plug.Head

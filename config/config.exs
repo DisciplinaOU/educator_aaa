@@ -1,5 +1,16 @@
 use Mix.Config
 
+# NOTE(smaximov):
+#   This does not currently do anything, but it will allow to use Jason
+#   as the JSON implementation for Phoenix when 1.4 lands.
+config :phoenix, :json_library, Jason
+
+config :phoenix, :format_encoders, json: Jason
+
+config :ecto, :json_library, Jason
+
+config :educator_aaa, Educator.AAA.Repo, types: Educator.AAA.PostgresTypes
+
 config :educator_aaa,
   namespace: Educator.AAA,
   ecto_repos: [Educator.AAA.Repo]
