@@ -16,12 +16,14 @@ defmodule Educator.AAA.DataCase do
 
   using do
     quote do
+      alias Ecto.Changeset
       alias Educator.AAA.Repo
 
       import Ecto
       import Ecto.Changeset
       import Ecto.Query
       import Educator.AAA.DataCase
+      import Factory
     end
   end
 

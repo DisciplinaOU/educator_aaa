@@ -11,7 +11,8 @@ defmodule Educator.AAA.Mixfile do
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
       deps: deps(),
-      dialyzer: [ignore_warnings: ".dialyzer-ignore.exs"]
+      dialyzer: [ignore_warnings: ".dialyzer-ignore.exs", plt_add_apps: [:ex_unit]],
+      preferred_cli_env: [dialyzer: :test]
     ]
   end
 
@@ -43,9 +44,11 @@ defmodule Educator.AAA.Mixfile do
       {:cowboy, "~> 1.0"},
       {:distillery, "~> 2.0"},
       {:jason, "~> 1.1"},
+      {:comeonin, "~> 4.1"},
+      {:argon2_elixir, "~> 1.3"},
       {:credo, "~> 0.10", only: [:dev, :test], runtime: false},
       {:credo_contrib, "~> 0.1", only: [:dev, :test], runtime: false},
-      {:dialyxir, "~> 1.0.0-rc.3", only: [:dev], runtime: false}
+      {:dialyxir, "~> 1.0.0-rc.3", only: [:dev, :test], runtime: false}
     ]
   end
 

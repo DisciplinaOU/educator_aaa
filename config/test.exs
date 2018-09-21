@@ -13,3 +13,7 @@ config :educator_aaa, Educator.AAA.Repo,
   database: "educator_aaa_test",
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox
+
+config :argon2_elixir,
+  t_cost: 1,
+  m_cost: 8
