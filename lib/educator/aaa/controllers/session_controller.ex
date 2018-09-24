@@ -10,6 +10,7 @@ defmodule Educator.AAA.SessionController do
       conn
       |> put_status(:created)
       |> put_session(:educator_id, educator.id)
+      |> configure_session(renew: true)
       |> render(Educator.AAA.AccountView, "educator.json", educator: educator)
     end
   end

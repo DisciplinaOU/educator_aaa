@@ -38,6 +38,15 @@ defmodule Educator.AAA.ConnCase do
       Sandbox.mode(Educator.AAA.Repo, {:shared, self()})
     end
 
-    {:ok, conn: Phoenix.ConnTest.build_conn()}
+    conn = Phoenix.ConnTest.build_conn()
+
+    conn =
+      if tags[:session] do
+        Plug.Test.init_test_session(conn, %{})
+      else
+        conn
+      end
+
+    {:ok, conn: conn}
   end
 end

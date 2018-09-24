@@ -20,7 +20,7 @@ defmodule Educator.AAA.SessionControllerTest do
       assert id == get_session(conn, :educator_id)
     end
 
-    test "renders with 422 when credentials are invalid", %{conn: conn} do
+    test "responds with 422 when credentials are invalid", %{conn: conn} do
       params = %{email: "no@such.email", password: "password"}
       conn = post(conn, Routes.session_path(conn, :create, %{educator: params}))
 

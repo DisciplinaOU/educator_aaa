@@ -23,6 +23,6 @@ config :educator_aaa, Educator.AAA.Endpoint,
 
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",
-  metadata: [:user_id, :request_id]
+  metadata: [:educator_id, :request_id]
 
 import_config "#{Mix.env()}.exs"

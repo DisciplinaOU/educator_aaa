@@ -4,6 +4,26 @@ defmodule Educator.AAA.AccountsTest do
   alias Educator.AAA.Accounts
 
   describe "Educators" do
+    test "get_educator/1 when educator exists returns educator" do
+      educator = insert!(:educator)
+
+      assert Accounts.get_educator(educator.id) == educator
+    end
+
+    test "get_educator_by_email/1 when educator doesn't exists returns nil" do
+      assert Accounts.get_educator(0) == nil
+    end
+
+    test "get_educator_by_email/1 when educator exists returns educator" do
+      educator = insert!(:educator)
+
+      assert Accounts.get_educator_by_email(educator.email) == educator
+    end
+
+    test "get_educator_by_email/1 when email doesn't exists returns nil" do
+      assert Accounts.get_educator_by_email("no@such.email") == nil
+    end
+
     test "create_educator/1 with valid attributes creates new educator" do
       attrs = attrs_for(:educator)
 
@@ -88,16 +108,6 @@ defmodule Educator.AAA.AccountsTest do
 
       assert {:error, %Changeset{} = changeset} = Accounts.create_educator(attrs)
       assert %{password: ["matches title"]} = errors_on(changeset)
-    end
-
-    test "get_educator_by_email/1 when educator exists returns educator" do
-      educator = insert!(:educator)
-
-      assert Accounts.get_educator_by_email(educator.email) == educator
-    end
-
-    test "get_educator_by_email/1 when email doesn't exists returns nil" do
-      assert Accounts.get_educator_by_email("no@such.email") == nil
     end
 
     test "authenticate_educator/2 with valid credentials returns educator" do
