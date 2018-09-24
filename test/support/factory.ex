@@ -15,9 +15,9 @@ defmodule Factory do
   end
 
   @impl Factory.Base
-  def post(:educator, %{password: nil} = schema), do: schema
+  def pre_insert(:educator, %{password: nil} = schema), do: schema
 
   @impl Factory.Base
-  def post(:educator, %{password: password} = schema),
+  def pre_insert(:educator, %{password: password} = schema),
     do: struct(schema, Password.add_digest(password))
 end

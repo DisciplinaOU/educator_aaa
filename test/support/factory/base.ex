@@ -3,9 +3,9 @@ defmodule Factory.Base do
 
   @callback build(factory :: atom) :: Ecto.Schema.t() | no_return()
 
-  @callback post(factory :: atom, schema :: Ecto.Schema.t()) :: Ecto.Schema.t()
+  @callback pre_insert(factory :: atom, schema :: Ecto.Schema.t()) :: Ecto.Schema.t()
 
-  @optional_callbacks post: 2
+  @optional_callbacks pre_insert: 2
 
   defmacro __using__(opts) do
     repo = Keyword.get(opts, :repo)
@@ -45,9 +45,9 @@ defmodule Factory.Base do
 
   defmacro __before_compile__(_opts) do
     quote do
-      def post(_factory, schema), do: schema
+      def pre_insert(_factory, schema), do: schema
 
-      defoverridable post: 2
+      defoverridable pre_insert: 2
     end
   end
 
@@ -63,6 +63,7 @@ defmodule Factory.Base do
     factory_name
     |> module.build(attrs)
     |> Map.from_struct()
+    |> Map.delete(:__meta__)
   end
 
   @spec insert!(atom, atom, Keyword.t()) :: Ecto.Changeset.t() | no_return()
@@ -70,7 +71,7 @@ defmodule Factory.Base do
     schema = module.build(factory_name, attrs)
 
     factory_name
-    |> module.post(schema)
+    |> module.pre_insert(schema)
     |> repo.insert!()
   end
 

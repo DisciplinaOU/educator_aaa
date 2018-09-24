@@ -19,7 +19,10 @@ defmodule Educator.AAA.ConnCase do
     quote do
       # Import conveniences for testing with connections
       use Phoenix.ConnTest
+
       alias Educator.AAA.Router.Helpers, as: Routes
+
+      import Factory
 
       # The default endpoint for testing
       @endpoint Educator.AAA.Endpoint

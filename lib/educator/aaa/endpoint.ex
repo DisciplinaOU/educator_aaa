@@ -19,7 +19,7 @@ defmodule Educator.AAA.Endpoint do
   # Set :encryption_salt if you would also like to encrypt it.
   plug Plug.Session,
     store: :cookie,
-    key: "_educator_aaa_key",
+    key: "educator_aaa_session",
     signing_salt: "nJuCWl7J"
 
   plug Educator.AAA.Router

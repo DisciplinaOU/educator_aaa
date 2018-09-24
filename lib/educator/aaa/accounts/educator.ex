@@ -43,3 +43,9 @@ defmodule Educator.AAA.Accounts.Educator do
     |> unique_constraint(:email)
   end
 end
+
+require Protocol
+
+Protocol.derive(Jason.Encoder, Educator.AAA.Accounts.Educator,
+  only: ~w[id title email inserted_at updated_at]a
+)

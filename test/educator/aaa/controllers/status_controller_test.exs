@@ -6,7 +6,7 @@ defmodule Educator.AAA.StatusControllerTest do
       res =
         conn
         |> get(Routes.status_path(conn, :healthcheck))
-        |> response(204)
+        |> response(:no_content)
 
       assert res == ""
     end

@@ -55,7 +55,7 @@ defmodule Educator.AAA.Password.ChangesetHelpers do
     Enum.reduce_while(fields, :ok, fn field, :ok ->
       {_source, field_value} = fetch_field(changeset, field)
 
-      if String.downcase(field_value) == password do
+      if field_value && String.downcase(field_value) == password do
         {:halt, {:error, {"matches #{field}", validation: :password, matches: field}}}
       else
         {:cont, :ok}
