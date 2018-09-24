@@ -7,4 +7,6 @@ defmodule Educator.AAA.Password do
 
   @spec add_digest(String.t()) :: %{password: nil, password_digest: String.t()}
   def add_digest(password), do: Hasher.add_hash(password, hash_key: :password_digest)
+
+  defdelegate verify(password, hash), to: Hasher, as: :checkpw
 end

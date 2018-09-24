@@ -89,5 +89,41 @@ defmodule Educator.AAA.AccountsTest do
       assert {:error, %Changeset{} = changeset} = Accounts.create_educator(attrs)
       assert %{password: ["matches title"]} = errors_on(changeset)
     end
+
+    test "get_educator_by_email/1 when educator exists returns educator" do
+      educator = insert!(:educator)
+
+      assert Accounts.get_educator_by_email(educator.email) == educator
+    end
+
+    test "get_educator_by_email/1 when email doesn't exists returns nil" do
+      assert Accounts.get_educator_by_email("no@such.email") == nil
+    end
+
+    test "authenticate_educator/2 with valid credentials returns educator" do
+      educator = insert!(:educator, password: "password")
+
+      assert {:ok, ^educator} = Accounts.authenticate_educator(educator.email, "password")
+    end
+
+    test "authenticate_educator/2 with invalid password returns error changeset" do
+      educator = insert!(:educator, password: "password")
+
+      assert {
+               :error,
+               %Changeset{} = changeset
+             } = Accounts.authenticate_educator(educator.email, "invalid password")
+
+      assert %{password: ["is invalid"]} = errors_on(changeset)
+    end
+
+    test "authenticate_educator/2 when email doesn't exists returns error changeset" do
+      assert {
+               :error,
+               %Changeset{} = changeset
+             } = Accounts.authenticate_educator("no@such.email", "password")
+
+      assert %{email: ["is not found"]} = errors_on(changeset)
+    end
   end
 end

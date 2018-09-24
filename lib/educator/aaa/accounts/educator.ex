@@ -42,6 +42,21 @@ defmodule Educator.AAA.Accounts.Educator do
     |> unique_constraint(:title)
     |> unique_constraint(:email)
   end
+
+  @spec authenticate(t() | nil, String.t()) :: {:ok, t()} | {:error, Ecto.Changeset.t()}
+  def authenticate(%__MODULE__{} = educator, password) do
+    alias Educator.AAA.Password
+
+    if Password.verify(password, educator.password_digest) do
+      {:ok, educator}
+    else
+      {:error, add_error(change(%__MODULE__{}), :password, "is invalid")}
+    end
+  end
+
+  def authenticate(nil, _password) do
+    {:error, add_error(change(%__MODULE__{}), :email, "is not found")}
+  end
 end
 
 require Protocol
