@@ -4,15 +4,15 @@ defmodule Educator.AAA.Application do
   use Application
 
   alias Educator.AAA
+  alias Educator.AAA.S3
 
   def start(_type, _args) do
-    import Supervisor.Spec
-
     load_env()
 
     children = [
-      supervisor(Educator.AAA.Repo, []),
-      supervisor(Educator.AAA.Endpoint, [])
+      AAA.Repo,
+      AAA.Endpoint,
+      {S3, s3_config()}
     ]
 
     opts = [strategy: :one_for_one, name: AAA.Supervisor]
@@ -29,5 +29,18 @@ defmodule Educator.AAA.Application do
     defp load_env, do: [nil, nil]
   else
     defp load_env, do: Envy.auto_load()
+  end
+
+  if Mix.env() == :test do
+    defp s3_config do
+      %S3.Config{
+        access_key_id: "AWS access key ID",
+        secret_access_key: "AWS secret access key",
+        region: "AWS region",
+        bucket: "AWS S3 bucket"
+      }
+    end
+  else
+    defp s3_config, do: S3.Config.load_from_env()
   end
 end

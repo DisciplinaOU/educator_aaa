@@ -12,7 +12,11 @@ defmodule Educator.AAA.Mixfile do
       aliases: aliases(),
       deps: deps(),
       dialyzer: [ignore_warnings: ".dialyzer-ignore.exs", plt_add_apps: [:ex_unit]],
-      preferred_cli_env: [dialyzer: :test]
+      preferred_cli_env: [dialyzer: :test],
+
+      # Docs
+      name: "Educator AAA",
+      docs: docs()
     ]
   end
 
@@ -49,7 +53,8 @@ defmodule Educator.AAA.Mixfile do
       {:envy, "~> 1.1", only: [:dev, :test]},
       {:credo, "~> 0.10", only: [:dev, :test], runtime: false},
       {:credo_contrib, "~> 0.1", only: [:dev, :test], runtime: false},
-      {:dialyxir, "~> 1.0.0-rc.3", only: [:dev, :test], runtime: false}
+      {:dialyxir, "~> 1.0.0-rc.3", only: [:dev, :test], runtime: false},
+      {:ex_doc, "~> 0.19", only: :dev, runtime: false}
     ]
   end
 
@@ -64,6 +69,13 @@ defmodule Educator.AAA.Mixfile do
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       test: ["ecto.create --quiet", "ecto.migrate", "test"]
+    ]
+  end
+
+  defp docs do
+    [
+      main: "readme",
+      extras: ["README.md"]
     ]
   end
 end
