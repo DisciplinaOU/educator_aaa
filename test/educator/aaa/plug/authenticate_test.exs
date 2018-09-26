@@ -4,18 +4,14 @@ defmodule Educator.AAA.Plug.AuthenticateTest do
   alias Educator.AAA.Plug.Authenticate
 
   @tag session: true
-  test "assings educator when session exists", %{conn: conn} do
-    educator = insert!(:educator)
+  test "assings educator when session exists", %{conn: conn, educator: educator} do
+    %{id: educator_id} = educator
 
-    conn =
-      conn
-      |> put_session(:educator_id, educator.id)
-      |> Authenticate.call([])
+    conn = Authenticate.call(conn, [])
 
-    assert %{educator: ^educator} = conn.assigns
+    assert %{educator: %{id: ^educator_id}} = conn.assigns
   end
 
-  @tag session: true
   test "halts processing when session does not exists", %{conn: conn} do
     conn = Authenticate.call(conn, [])
 

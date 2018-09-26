@@ -7,11 +7,11 @@ defmodule Educator.AAA.AccountsTest do
     test "get_educator/1 when educator exists returns educator" do
       educator = insert!(:educator)
 
-      assert Accounts.get_educator(educator.id) == educator
+      assert Accounts.get_educator(educator.id).id == educator.id
     end
 
     test "get_educator_by_email/1 when educator doesn't exists returns nil" do
-      assert Accounts.get_educator(0) == nil
+      refute Accounts.get_educator(0)
     end
 
     test "get_educator_by_email/1 when educator exists returns educator" do

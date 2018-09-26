@@ -1,23 +1,38 @@
-defmodule Educator.AAA.S3.SignatureMeta do
-  @moduledoc "Information used to create upload signature."
+defmodule Educator.AAA.S3.SigningOpts do
+  @moduledoc "Options for generating policy and signature."
 
   alias Educator.AAA.S3.Config
 
+  @kb 1024
+  @mb 1024 * @kb
+
   @enforce_keys [:date, :scope]
-  defstruct date: nil, scope: nil, algorithm: "AWS4-HMAС-SHA256"
+  defstruct date: nil,
+            scope: nil,
+            algorithm: "AWS4-HMAC-SHA256",
+            acl: "public-read",
+            expires_in: 60,
+            content_length: (10 * @kb)..(10 * @mb)
 
   @type t :: %__MODULE__{
           date: Date.t(),
           scope: String.t(),
-          algorithm: String.t()
+          algorithm: String.t(),
+          acl: String.t(),
+          expires_in: pos_integer(),
+          content_length: Range.t()
         }
 
-  @spec build(Config.t(), Date.t()) :: t()
-  def build(%Config{} = config, date \\ Date.utc_today()) do
-    %__MODULE__{
-      date: date,
-      scope: credential(config, date)
-    }
+  @spec build(Config.t(), Keyword.t()) :: t()
+  def build(%Config{} = config, overrides \\ []) do
+    {date, overrides} = Keyword.pop(overrides, :date, Date.utc_today())
+
+    attrs =
+      overrides
+      |> Map.new()
+      |> Map.merge(%{date: date, scope: credential(config, date)})
+
+    struct(__MODULE__, attrs)
   end
 
   @spec date(t(), :date | :datetime) :: String.t()

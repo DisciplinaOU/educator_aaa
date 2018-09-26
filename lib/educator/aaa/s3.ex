@@ -1,44 +1,60 @@
 defmodule Educator.AAA.S3 do
   @moduledoc "Direct uploads to AWS S3."
 
-  use Agent
+  alias Educator.AAA.S3.Config
+  alias Educator.AAA.S3.Policy
+  alias Educator.AAA.S3.SigningOpts
 
-  alias Educator.AAA.S3.{Config, Policy, SignatureMeta, Upload}
+  alias Educator.AAA.Media.Upload
 
-  def start_link(config), do: Agent.start_link(fn -> config end, name: __MODULE__)
+  @type result :: {:ok, any()} | {:error, any()}
 
-  @spec config :: Config.t()
-  def config, do: Agent.get(__MODULE__, & &1)
+  @spec bucket() :: String.t() | nil
+  def bucket do
+    :educator_aaa
+    |> Application.get_env(:aws)
+    |> Keyword.get(:bucket)
+    |> case do
+      {:system, env_var} -> System.get_env(env_var)
+      bucket -> bucket
+    end
+  end
 
-  @spec authenticated_upload_params(Config.t(), Upload.t(), Date.t()) :: map()
+  @spec bucket_url() :: String.t()
+  def bucket_url, do: bucket_url(config())
+
+  @spec bucket_url(Config.t()) :: String.t()
+  def bucket_url(%Config{bucket: bucket, region: region}),
+    do: "https://s3.#{region}.amazonaws.com/#{bucket}"
+
+  @spec authenticated_upload_params(Upload.t(), Keyword.t()) :: map()
   def authenticated_upload_params(
-        %Config{
-          bucket: bucket
-        } = config,
         %Upload{
           mimetype: mimetype,
-          key: key,
-          acl: acl
+          key: key
         } = upload,
-        date \\ Date.utc_today()
+        overrides \\ []
       ) do
-    %SignatureMeta{
+    %Config{bucket: bucket} = config = config()
+
+    %SigningOpts{
       algorithm: algorithm,
-      scope: scope
-    } = meta = SignatureMeta.build(config, date)
+      scope: scope,
+      acl: acl
+    } = opts = SigningOpts.build(config, overrides)
 
     policy =
       config
-      |> Policy.build(upload, meta)
+      |> Policy.build(upload, opts)
       |> Policy.encode()
 
     signature =
       config
-      |> signing_key(meta)
+      |> signing_key(opts)
       |> sign(policy)
 
     %{
-      url: bucket_url(bucket),
+      url: bucket_url(config),
       data: %{
         acl: acl,
         bucket: bucket,
@@ -47,21 +63,59 @@ defmodule Educator.AAA.S3 do
         "Content-Type": mimetype,
         "x-amz-algorithm": algorithm,
         "x-amz-credential": scope,
-        "x-amz-date": SignatureMeta.date(meta, :datetime),
+        "x-amz-date": SigningOpts.date(opts, :datetime),
         "x-amz-signature": signature
       }
     }
   end
 
-  @spec bucket_url(String.t()) :: String.t()
-  defp bucket_url(bucket), do: "https://#{bucket}.s3.amazonaws.com"
+  @spec head(String.t()) :: result()
+  def head(key) do
+    bucket()
+    |> ExAws.S3.head_object(key)
+    |> ExAws.request()
+  end
+
+  @spec exists?(String.t()) :: boolean() | no_return
+  def exists?(key) do
+    case head(key) do
+      {:ok, %{status_code: 200}} -> true
+      _ -> false
+    end
+  end
+
+  @spec copy(String.t(), String.t()) :: result()
+  def copy(src_key, dst_key) when src_key != dst_key do
+    bucket = bucket()
+
+    bucket
+    |> ExAws.S3.put_object_copy(dst_key, bucket, src_key, acl: :public_read)
+    |> ExAws.request()
+  end
+
+  @spec delete(String.t()) :: result()
+  def delete(key) do
+    bucket()
+    |> ExAws.S3.delete_object(key)
+    |> ExAws.request()
+  end
+
+  @spec config :: Config.t()
+  defp config do
+    s3_config_with_bucket =
+      :s3
+      |> ExAws.Config.new()
+      |> Map.put(:bucket, bucket())
+
+    struct(Config, s3_config_with_bucket)
+  end
 
   defp signing_key(
          %Config{secret_access_key: secret_access_key, region: region},
-         %SignatureMeta{} = meta
+         %SigningOpts{} = opts
        ) do
     "AWS4#{secret_access_key}"
-    |> hmac_sha256(SignatureMeta.date(meta, :date))
+    |> hmac_sha256(SigningOpts.date(opts, :date))
     |> hmac_sha256(region)
     |> hmac_sha256("s3")
     |> hmac_sha256("aws4_request")

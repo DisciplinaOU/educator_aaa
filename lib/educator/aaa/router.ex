@@ -12,8 +12,12 @@ defmodule Educator.AAA.Router do
     get "/healthcheck", StatusController, :healthcheck
 
     post "/accounts", AccountController, :register
+
     get "/account", AccountController, :current
+    post "/account/logo", AccountController, :upload_logo
 
     post "/sessions", SessionController, :create
+
+    post "/uploads/sign", UploadController, :sign
   end
 end

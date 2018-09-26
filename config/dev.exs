@@ -18,3 +18,14 @@ config :educator_aaa, Educator.AAA.Repo,
   database: "educator_aaa_dev",
   hostname: "localhost",
   pool_size: 10
+
+config :ex_aws,
+  access_key_id: [
+    {:system, "AWS_ACCESS_KEY_ID"},
+    {:awscli, "educator_aaa", 30}
+  ],
+  secret_access_key: [
+    {:system, "AWS_SECRET_ACCESS_KEY"},
+    {:awscli, "educator_aaa", 30}
+  ],
+  region: "eu-central-1"

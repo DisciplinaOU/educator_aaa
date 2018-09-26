@@ -21,6 +21,8 @@ config :educator_aaa, Educator.AAA.Endpoint,
   render_errors: [view: Educator.AAA.ErrorView, accepts: ~w(json)],
   pubsub: [name: Educator.AAA.PubSub, adapter: Phoenix.PubSub.PG2]
 
+config :educator_aaa, :aws, bucket: {:system, "AWS_S3_BUCKET"}
+
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",
   metadata: [:educator_id, :request_id]

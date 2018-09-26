@@ -14,6 +14,13 @@ defmodule Factory do
     }
   end
 
+  def build(:upload) do
+    %Educator.AAA.Media.Upload{
+      key: "#{Ecto.UUID.generate()}.png",
+      mimetype: "image/png"
+    }
+  end
+
   @impl Factory.Base
   def pre_insert(:educator, %{password: nil} = schema), do: schema
 

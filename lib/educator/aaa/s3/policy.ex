@@ -1,7 +1,10 @@
 defmodule Educator.AAA.S3.Policy do
   @moduledoc "Security policy for authenticated S3 requests."
 
-  alias Educator.AAA.S3.{Config, SignatureMeta, Upload}
+  alias Educator.AAA.S3.Config
+  alias Educator.AAA.S3.SigningOpts
+
+  alias Educator.AAA.Media.Upload
 
   @derive Jason.Encoder
   @enforce_keys [:expiration, :conditions]
@@ -14,35 +17,21 @@ defmodule Educator.AAA.S3.Policy do
 
   @type condition :: [String.t()] | %{required(String.t() | atom) => String.t()}
 
-  @spec build(Config.t(), Upload.t(), Date.t() | SignatureMeta.t()) :: t() | no_return
+  @spec build(Config.t(), Upload.t(), SigningOpts.t()) :: t() | no_return
   def build(
-        %Config{bucket: bucket} = config,
+        %Config{bucket: bucket},
         %Upload{
           mimetype: mimetype,
-          key: key,
+          key: key
+        },
+        %SigningOpts{
+          algorithm: algorithm,
+          scope: scope,
           acl: acl,
           expires_in: expires_in,
           content_length: content_length
-        },
-        meta_or_date \\ Date.utc_today()
+        } = opts
       ) do
-    meta =
-      case meta_or_date do
-        %Date{} ->
-          SignatureMeta.build(config, meta_or_date)
-
-        %SignatureMeta{} ->
-          meta_or_date
-
-        _ ->
-          raise "Expected Educator.AAA.S3.SignatureMeta or Date"
-      end
-
-    %SignatureMeta{
-      algorithm: algorithm,
-      scope: scope
-    } = meta
-
     %__MODULE__{
       expiration: expiration_from_now(expires_in),
       conditions: [
@@ -52,7 +41,7 @@ defmodule Educator.AAA.S3.Policy do
         %{"Content-Type": mimetype},
         %{"x-amz-algorithm": algorithm},
         %{"x-amz-credential": scope},
-        %{"x-amz-date": SignatureMeta.date(meta, :datetime)},
+        %{"x-amz-date": SigningOpts.date(opts, :datetime)},
         ["content-length-range", content_length.first, content_length.last]
       ]
     }

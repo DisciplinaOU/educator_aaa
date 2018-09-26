@@ -38,15 +38,16 @@ defmodule Educator.AAA.ConnCase do
       Sandbox.mode(Educator.AAA.Repo, {:shared, self()})
     end
 
-    conn = Phoenix.ConnTest.build_conn()
+    conn = Plug.Test.init_test_session(Phoenix.ConnTest.build_conn(), %{})
 
-    conn =
-      if tags[:session] do
-        Plug.Test.init_test_session(conn, %{})
-      else
-        conn
-      end
+    if tags[:session] do
+      %{id: id} = educator = Factory.insert!(:educator)
 
-    {:ok, conn: conn}
+      conn = Plug.Conn.put_session(conn, :educator_id, id)
+
+      {:ok, conn: conn, educator: educator}
+    else
+      {:ok, conn: conn}
+    end
   end
 end

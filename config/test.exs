@@ -17,3 +17,8 @@ config :educator_aaa, Educator.AAA.Repo,
 config :argon2_elixir,
   t_cost: 1,
   m_cost: 8
+
+config :ex_aws,
+  access_key_id: "test_access_key_id",
+  secret_access_key: "test_secret_access_key",
+  region: "us-east-1"
