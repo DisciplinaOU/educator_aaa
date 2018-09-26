@@ -50,6 +50,7 @@ defmodule Educator.AAA.Mixfile do
       {:jason, "~> 1.1"},
       {:comeonin, "~> 4.1"},
       {:argon2_elixir, "~> 1.3"},
+      {:corsica, "~> 1.1"},
       {:envy, "~> 1.1", only: [:dev, :test]},
       {:credo, "~> 0.10", only: [:dev, :test], runtime: false},
       {:credo_contrib, "~> 0.1", only: [:dev, :test], runtime: false},

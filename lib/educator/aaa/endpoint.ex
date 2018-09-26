@@ -10,6 +10,18 @@ defmodule Educator.AAA.Endpoint do
   plug Plug.RequestId
   plug Plug.Logger
 
+  @enable_cors_logs if Mix.env() == :prod,
+                      do: false,
+                      else: [rejected: :warn, invalid: :debug, accepted: :debug]
+
+  # TODO(smaximov): restrict origins.
+  plug Corsica,
+    origins: "*",
+    allow_credentials: true,
+    allow_headers: ~w[Content-Type Accept],
+    max_age: 600,
+    log: @enable_cors_logs
+
   plug Plug.Parsers,
     parsers: [:json],
     json_decoder: Jason
