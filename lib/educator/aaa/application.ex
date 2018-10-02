@@ -11,6 +11,9 @@ defmodule Educator.AAA.Application do
       AAA.Endpoint
     ]
 
+    AAA.Instrumenters.setup()
+    AAA.PrometheusExporter.setup()
+
     opts = [strategy: :one_for_one, name: Educator.AAA.Supervisor]
     Supervisor.start_link(children, opts)
   end

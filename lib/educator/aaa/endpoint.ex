@@ -7,6 +7,9 @@ defmodule Educator.AAA.Endpoint do
     plug Phoenix.CodeReloader
   end
 
+  plug Educator.AAA.PrometheusExporter
+  plug Educator.AAA.Instrumenters.Pipeline
+
   plug Plug.RequestId
   plug Plug.Logger
 
