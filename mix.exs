@@ -62,7 +62,6 @@ defmodule Educator.AAA.Mixfile do
       {:prometheus_phoenix, "~> 1.2"},
       {:prometheus_plugs, "~> 1.0"},
       {:prometheus_process_collector, "~> 1.3"},
-      {:envy, "~> 1.1", only: [:dev, :test]},
       {:credo, "~> 0.10", only: [:dev, :test], runtime: false},
       {:credo_contrib, "~> 0.1", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.0.0-rc.3", only: [:dev, :test], runtime: false},
