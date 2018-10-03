@@ -1,0 +1,62 @@
+version: '3.7'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.development
+    volumes:
+      - type: bind
+        source: .
+        target: /app
+      - /app/_build
+      - /app/deps
+    ports:
+      - 4000:4000
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: postgres
+      POSTGRES_HOST: db
+    env_file:
+      - ".env.dev"
+    depends_on:
+      - db
+    command: ["bin/wait-for", "db:5432", "--", "mix", "phx.server"]
+
+  db:
+    image: postgres:10.5-alpine
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: postgres
+    volumes:
+      - type: volume
+        source: db-data
+        target: /var/lib/postgresql/data
+
+  prometheus:
+    image: prom/prometheus:v2.4.2
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    depends_on:
+      - web
+    ports:
+      - 9090:9090
+
+  grafana:
+    image: grafana/grafana:5.2.4
+    volumes:
+      - type: volume
+        source: grafana-storage
+        target: /var/lib/grafana
+    ports:
+      - 9001:3000
+    environment:
+      GF_INSTALL_PLUGINS: grafana-piechart-panel
+    depends_on:
+      - prometheus
+
+volumes:
+  db-data:
+  grafana-storage:

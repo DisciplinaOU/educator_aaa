@@ -13,10 +13,10 @@ config :phoenix, :stacktrace_depth, 20
 
 config :educator_aaa, Educator.AAA.Repo,
   adapter: Ecto.Adapters.Postgres,
-  username: "postgres",
-  password: "postgres",
-  database: "educator_aaa_dev",
-  hostname: "localhost",
+  username: System.get_env("POSTGRES_USER") || "postgres",
+  password: System.get_env("POSTGRES_PASSWORD") || "postgres",
+  database: System.get_env("POSTGRES_DB") || "educator_aaa_dev",
+  hostname: System.get_env("POSTGRES_HOST") || "localhost",
   pool_size: 10
 
 config :ex_aws,
@@ -28,4 +28,4 @@ config :ex_aws,
     {:system, "AWS_SECRET_ACCESS_KEY"},
     {:awscli, "educator_aaa", 30}
   ],
-  region: "eu-central-1"
+  region: System.get_env("AWS_S3_BUCKET") || "eu-central-1"

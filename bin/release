@@ -1,0 +1,17 @@
+#!/bin/sh
+
+set -e
+
+mix_eval() {
+    mix run --no-compile --no-start --eval "IO.write($1)"
+}
+
+export MIX_ENV=prod
+
+mix release --env=prod
+mkdir -p _build/artifacts
+
+app_name="$(mix_eval "Educator.AAA.Mixfile.project[:app]")"
+app_version="$(mix_eval "Educator.AAA.Mixfile.project[:version]")"
+
+tar zxf "_build/prod/rel/$app_name/releases/$app_version/$app_name.tar.gz" -C _build/artifacts

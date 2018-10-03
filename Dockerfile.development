@@ -1,0 +1,14 @@
+FROM bitwalker/alpine-elixir:1.7.3
+
+ENV MIX_ENV=dev
+
+WORKDIR /app
+
+ADD . .
+
+RUN apk update && apk add build-base
+
+RUN mix deps.get
+RUN mix compile
+
+EXPOSE 4000
