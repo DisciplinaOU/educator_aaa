@@ -22,7 +22,7 @@ defmodule Educator.AAA.Media.Upload do
 
   @mimetypes ~w[image/png image/jpeg image/svg]
 
-  @spec changeset(t(), :create, any()) :: Ecto.Changeset.t()
+  @spec changeset(t(), :create, map()) :: Ecto.Changeset.t()
   def changeset(%__MODULE__{} = schema, :create, attrs) do
     schema
     |> cast(attrs, [:key, :mimetype])
