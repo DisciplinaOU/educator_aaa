@@ -1,0 +1,18 @@
+#!/bin/sh
+
+set -e
+
+cli=
+
+database="${POSTGRES_DB-postgres}"
+username="${POSTGRES_USER-postgres}"
+host="${POSTGRES_HOST-localhost}"
+port="${POSTGRES_PORT-2345}"
+
+if command -v pgcli; then
+    cli=pgcli
+else
+    cli=psql
+fi
+
+"$cli" -d "$database" -U "$username" -h "$host" -p "$port" -U postgres
