@@ -28,4 +28,4 @@ config :ex_aws,
     {:system, "AWS_SECRET_ACCESS_KEY"},
     {:awscli, "educator_aaa", 30}
   ],
-  region: System.get_env("AWS_S3_BUCKET") || "eu-central-1"
+  region: System.get_env("AWS_REGION") || "eu-central-1"
