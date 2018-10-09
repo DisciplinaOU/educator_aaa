@@ -29,3 +29,5 @@ config :ex_aws,
     {:awscli, "educator_aaa", 30}
   ],
   region: System.get_env("AWS_REGION") || "eu-central-1"
+
+config :educator_aaa, :aws, bucket: {:system, "AWS_S3_BUCKET"}

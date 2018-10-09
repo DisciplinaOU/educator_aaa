@@ -46,6 +46,14 @@ end
 release :educator_aaa do
   set version: current_version(:educator_aaa)
 
+  set config_providers: [
+        {Mix.Releases.Config.Providers.Elixir, ["${RELEASE_ROOT_DIR}/etc/config.exs"]}
+      ]
+
+  set overlays: [
+        {:copy, "rel/config/config.exs", "etc/config.exs"}
+      ]
+
   set applications: [
         :runtime_tools
       ]

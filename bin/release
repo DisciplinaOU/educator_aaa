@@ -8,10 +8,16 @@ mix_eval() {
 
 export MIX_ENV=prod
 
+mix deps.get
+mix compile
 mix release --env=prod
-mkdir -p _build/artifacts
 
 app_name="$(mix_eval "Educator.AAA.Mixfile.project[:app]")"
 app_version="$(mix_eval "Educator.AAA.Mixfile.project[:version]")"
+target=_build/artifacts/release.tar.gz
 
-tar zxf "_build/prod/rel/$app_name/releases/$app_version/$app_name.tar.gz" -C _build/artifacts
+mkdir -p "$(dirname "$target")"
+
+cp "_build/prod/rel/$app_name/releases/$app_version/$app_name.tar.gz" "$target"
+
+printf '\nCreated new release v%s: %s\n' "$app_version" "$target"
