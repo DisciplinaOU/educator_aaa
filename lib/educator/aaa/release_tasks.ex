@@ -10,7 +10,7 @@ defmodule Educator.AAA.ReleaseTasks do
   end
 
   @start_apps [:crypto, :ssl, :postgrex, :ecto]
-  @repos Application.get_env(Educator.AAA.Mixfile.project()[:app], :ecto_repos)
+  @repos Application.get_env(Mix.Project.config()[:app], :ecto_repos)
 
   defp start do
     Enum.each(@start_apps, &Application.ensure_all_started/1)

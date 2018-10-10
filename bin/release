@@ -12,8 +12,8 @@ mix deps.get
 mix compile
 mix release --env=prod
 
-app_name="$(mix_eval "Educator.AAA.Mixfile.project[:app]")"
-app_version="$(mix_eval "Educator.AAA.Mixfile.project[:version]")"
+app_name="$(mix_eval "Mix.Project.config[:app]")"
+app_version="$(mix_eval "Mix.Project.config[:version]")"
 target=_build/artifacts/release.tar.gz
 
 mkdir -p "$(dirname "$target")"
