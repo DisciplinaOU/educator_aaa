@@ -54,6 +54,10 @@ release :educator_aaa do
         {:copy, "rel/config/config.exs", "etc/config.exs"}
       ]
 
+  set commands: [
+        migrate: "rel/commands/migrate"
+      ]
+
   set applications: [
         :runtime_tools
       ]

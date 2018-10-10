@@ -71,8 +71,7 @@ Erlang installed, since ERTS is bundled with the release.
   foreground.
 * `$APP_DIR/bin/educator_aaa start` &mdash; run the release in the background.
 * `$APP_DIR/bin/educator_aaa stop` &mdash; stop a release started via `start`.
+* `$APP_DIR/bin/educator_aaa migrate` &mdash; run database migrations.
 
 See [Using Distillery with systemd](https://hexdocs.pm/distillery/guides/systemd.html)
 for sample systemd unit configs.
-
-**TODO**: running database tasks.
