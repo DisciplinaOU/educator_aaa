@@ -22,3 +22,5 @@ config :ex_aws,
   access_key_id: "test_access_key_id",
   secret_access_key: "test_secret_access_key",
   region: "us-east-1"
+
+config :educator_aaa, :aws, bucket: "test.bucket.name"

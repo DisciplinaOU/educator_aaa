@@ -12,7 +12,7 @@ defmodule Educator.AAA.UploadControllerTest do
 
     @tag session: true
     test "responds with 422 when mimetype is invalid", %{conn: conn} do
-      conn = post(conn, Routes.upload_path(conn, :sign, %{mimetype: "text/csv"}))
+      conn = post(conn, Routes.upload_path(conn, :sign), mimetype: "text/csv")
 
       assert %{
                "errors" => %{
@@ -27,7 +27,7 @@ defmodule Educator.AAA.UploadControllerTest do
       educator: %{id: educator_id}
     } do
       mimetype = "image/png"
-      conn = post(conn, Routes.upload_path(conn, :sign, %{mimetype: mimetype}))
+      conn = post(conn, Routes.upload_path(conn, :sign), mimetype: mimetype)
 
       assert %{
                "url" => _url,
